@@ -1,17 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <title>Google Search</title>
+        <title>Google Images</title>
         <link rel="icon" href="images/favicon.ico">
         <link rel="stylesheet" href="style/styles.css">
         <script src="https://kit.fontawesome.com/8b5ef9527b.js" crossorigin="anonymous"></script>
     </head>
     <body>
         <div class="nav">
-            <a href="image_search.html">Image Search</a>
-            <a href="advanced_search.html">Advanced Search</a>
+            <a href="index.html">Google Search</a>
         </div>
         <img src="images/google_logo.png" alt="Google">
+        <span>images</span>
         <form action="https://google.com/search">
             <div class="search-bar-container">
                 <i class="fas fa-search"></i>
@@ -19,7 +19,7 @@
             </div>
             <div class="button-group">
                 <input class="search-button" type="submit" value="Google Search">
-                <input class="search-button" type="submit" name="btnI" value="I'm Feeling Lucky">
+                <input type="hidden" name="tbm" value="isch">
             </div>
         </form>
     </body>
