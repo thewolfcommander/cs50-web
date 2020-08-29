@@ -16,15 +16,16 @@ i {
     position: absolute;
 }
 
-span {
-    color: #4285f4;
-    font-family: roboto-regular, arial, sans-serif;
-    font-size: 16px;
+h1 {
+    font-size: 20px;
+    font-weight: 400;
+    color: rgb(217, 48, 37);
+    margin: 0 0 0 30px;
 }
 
-.nav {
-    display: flex;
-    justify-content: flex-end;
+label {
+    font-size: 13px;
+    color: #222;
 }
 
 a {
@@ -37,6 +38,29 @@ a {
 
 a:hover {
     text-decoration-line: underline;
+}
+
+.border {
+    border-bottom: 1px solid rgb(235, 235, 235);
+    margin: 20px 0;
+}
+
+.image-label {
+    color: #4285f4;
+    font-size: 16px;
+    position: relative;
+    bottom: 15px;
+    left: 105px;
+}
+
+.image-container {
+    position: relative;
+    text-align: center;
+}
+
+.nav {
+    display: flex;
+    justify-content: flex-end;
 }
 
 .search-bar-container {
@@ -74,10 +98,28 @@ a:hover {
     margin: 8px;
 }
 
+.advanced-search-button {
+    background-color: rgb(77, 144, 254);
+    color: white;
+    border: 2px solid rgb(48, 121, 237);
+    border-radius: 2px;
+    font-size: 11px;
+    font-weight: 700;
+    height: 100%;
+    width: 120px;
+    height: 36px;
+    grid-column: 2 / span 1;
+    justify-self: end;
+}
+
 .search-button:hover {
     border: 1px solid rgb(195, 195, 195);
     box-shadow: 0 0 2px rgb(195, 195, 195);
     cursor: pointer;
+}
+
+.advanced-search-button:hover {
+    background-color: rgb(48, 121, 237);
 }
 
 .search-bar:focus, .search-bar:hover {
@@ -85,3 +127,45 @@ a:hover {
     box-shadow: 0 0 7px #dfe1e5;
 }
 
+.advanced-search-grid {
+    display: grid;
+    grid-template-columns: 182px auto 370px;
+    grid-gap: 20px 10px;
+    margin: 10px 0;
+    align-items: center;
+    max-width: 1330px;
+    margin-left: 30px;
+}
+
+.advanced-search-input {
+    border: 1px solid #d9d9d9;
+    border-radius: 1px;
+    font-size: 13px;
+    height: 25px;
+    padding: 1px 8px;
+}
+
+.advanced-search-input:focus {
+    border: 1px solid #4d90fe;
+}
+
+.search-label {
+    color: #555;
+    font-size: 11px;
+}
+
+.search-label-mono {
+    color: #666;
+    font-family: monospace;
+}
+
+#find-pages {
+    font-size: 16px;
+    color: #333;
+}
+
+#example {
+    font-size: 13px;
+    color: #777;
+    font-weight: 700;
+}
