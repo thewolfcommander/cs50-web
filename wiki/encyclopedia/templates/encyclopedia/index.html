@@ -5,11 +5,19 @@
 {% endblock %}
 
 {% block body %}
-    <h1>All Pages</h1>
+    <h1>
+        {% if home %}
+            All Pages
+        {% else %} 
+            Search Results
+        {% endif %}
+    </h1>
 
     <ul>
         {% for entry in entries %}
-            <li>{{ entry }}</li>
+            <li><a href="{% url 'entry' entry.title %}">{{ entry }}</a></li>
+        {% empty %}
+            Your search did not match any entries.
         {% endfor %}
     </ul>
 
