@@ -8,6 +8,12 @@
     {% endif %}
 {% endblock %}
 
+{% block nav %}
+<div>
+    <a href="{% url 'edit' title %}">Edit This Page</a>
+</div>
+{% endblock %}
+
 {% block body %}
 
     {% if entry %}
