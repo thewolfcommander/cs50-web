@@ -13,8 +13,20 @@ h1 {
 }
 
 textarea {
-    height: 90vh;
+    height: 70vh;
     width: 80%;
+    display: block;
+    margin-bottom: 10px;
+}
+
+label {
+    display: block;
+    margin-bottom: 0;
+}
+
+input {
+    display: block;
+    margin-bottom: 10px;
 }
 
 .main {
@@ -35,4 +47,18 @@ textarea {
 
 .sidebar h2 {
     margin-top: 5px;
+}
+
+.submit-button {
+    background-color: rgb(77, 144, 254);
+    color: white;
+    border: 2px solid rgb(48, 121, 237);
+    border-radius: 2px;
+    font-weight: 700;
+    width: 140px;
+    height: 35px;
+}
+
+.submit-button:hover {
+    background-color: rgb(48, 121, 237);
 }

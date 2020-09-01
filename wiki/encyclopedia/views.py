@@ -1,7 +1,6 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render
 from django import forms
 from django.http import HttpResponseRedirect
-from django.urls import reverse
 from django.core.exceptions import ValidationError
 import random
 import markdown2
@@ -10,7 +9,7 @@ from . import util
 
 # Form for search bar
 class SearchBar(forms.Form):
-    q = forms.CharField(label="", widget=forms.TextInput(attrs={'placeholder': 'Search Encyclopedia'}))
+    q = forms.CharField(label="", widget=forms.TextInput(attrs={'placeholder': 'Search Encyclopedia', 'class': 'search'}))
 
 
 # Form to create a new page
@@ -68,7 +67,7 @@ def entry(request, title):
         md_content = None
 
     return render(request, "encyclopedia/entry.html", {
-        "title": title.capitalize(),
+        "title": title.lower(),
         "entry": md_content,
         "search_form": SearchBar()
     })
@@ -91,8 +90,7 @@ def new(request):
             content = form.cleaned_data["content"]
 
             # Save new entry to disk
-            with open(f"./entries/{title}.md", "w") as f:
-                f.write(content)
+            util.save_entry(title, content)
 
             # Redirect to new entry's page
             return HttpResponseRedirect(title)
@@ -122,8 +120,7 @@ def edit(request, title):
             content = form.cleaned_data["content"]
 
             # Save new entry to disk
-            with open(f"./entries/{title}.md", "w") as f:
-                f.write(content)
+            util.save_entry(title, content)
 
             # Redirect to new entry's page
             return HttpResponseRedirect(f"/wiki/{title}")
