@@ -3,5 +3,19 @@
 {% block body %}
     <h2>Active Listings</h2>
 
-    TODO
+    <div class="card-columns">
+        {% for listing in listings %}
+            <div class="card">
+                {% if listing.image %}
+                    <img src="{{ listing.image }}" class="card-img-top" alt="{{ listing.title }}">
+                {% endif %}
+
+                <div class="card-body">
+                    <h5 class="card-title">{{ listing.title }}</h5>
+                    <p class="card-text">{{ listing.description }}</p>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
 {% endblock %}
