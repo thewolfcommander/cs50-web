@@ -2,6 +2,12 @@
 
 {% block body %}
     <div>
+        {% if in_watchlist %}
+            <a href="{% url 'toggle_watchlist' listing.id %}"><span class="badge badge-primary">Watchlisted</span></a>
+        {% elif user.is_authenticated and not in_watchlist %}
+            <a href="{% url 'toggle_watchlist' listing.id %}"><span class="badge badge-secondary">Add to Watchlist</span></a>
+        {% endif %}
+
         <h2>Listing: {{ listing.title }}</h2>
         <h3>${{ listing.price }}</h3> 
         <p>{{ listing.description }}</p>
@@ -10,37 +16,35 @@
         {% endif %}
     </div>
 
-    <h3>Details</h3>
-    <ul>
-        <li>Category: {{ listing.category }}</li>
-        <li>Listed by: {{ listing.creator.username }}</li>
-    </ul>
+    <div>
+        <h3>Details</h3>
+        <ul>
+            <li>Category: {{ listing.category }}</li>
+            <li>Listed by: {{ listing.creator.username }}</li>
+        </ul>
+    </div>
 
-    {% if in_watchlist %}
-        <p>in watchlist</p>
-    {% else %}
-        <p>not in watchlist</p>
-    {% endif %}    
+    <div>
+        <h3>Comments</h3>
+        {% for comment in comments %}
+            <div class="comment">
+                <h5>{{ comment.commenter }}</h5>
+                <p class="text-muted"><small>{{ comment.timestamp }}</small></p>
+                <p>{{ comment.content }}</p>
+            </div>
+        {% empty %}
+            <p>No comments yet.</p>
+        {% endfor %}
 
-    <h3>Comments</h3>
-    {% for comment in comments %}
-        <div class="comment">
-            <h5>{{ comment.commenter }}</h5>
-            <p class="text-muted"><small>{{ comment.timestamp }}</small></p>
-            <p>{{ comment.content }}</p>
-        </div>
-    {% empty %}
-        <p>No comments yet.</p>
-    {% endfor %}
-
-    {% if user.is_authenticated %}
-        <h3>Add a Comment</h3>
-        <form action="{% url 'listing' listing.id %}" method="post">
-            {% load crispy_forms_tags %}
-            {% crispy comment_form comment_form.helper %}
-        </form>
-    {% else %}
-        <p>Log in to post a comment.</p>
-    {% endif %}
+        {% if user.is_authenticated %}
+            <h3>Add a Comment</h3>
+            <form action="{% url 'add_comment' listing.id %}" method="post">
+                {% load crispy_forms_tags %}
+                {% crispy comment_form comment_form.helper %}
+            </form>
+        {% else %}
+            <p>Log in to post a comment.</p>
+        {% endif %}
+    </div>
 
 {% endblock %}

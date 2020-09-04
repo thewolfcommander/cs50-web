@@ -4,7 +4,7 @@ from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
-from django.forms import ModelForm
+from django.forms import ModelForm, Form
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit
 
@@ -123,36 +123,58 @@ def create(request):
     })
 
 
-def listing(request, listing_id):
+def listing_page_utility(request, listing_id):
     listing = Listing.objects.get(id=listing_id)
     comments = Comment.objects.filter(listing=listing)
-    in_watchlist = listing in request.user.watchlist.all()
+    
+    if request.user.is_authenticated:
+        in_watchlist = listing in request.user.watchlist.all()
+    else:
+        in_watchlist = False
 
-    # Validate and save comment if request method is POST
-    if request.method =="POST":
-        form = NewCommentForm(request.POST)
+    return listing, comments, in_watchlist
 
-        if form.is_valid():
-            content = form.cleaned_data["content"]
-            comment = Comment(listing=listing, commenter=request.user, content=content)
-            comment.save()
-            return HttpResponseRedirect(reverse("listing", args=(listing.id,)))
 
-        else:
-            return render(request, "auctions/listing.html", {
-                "listing": listing,
-                "comments": comments,
-                "comment_form": form,
-                "in_watchlist": in_watchlist
-            })
+def listing(request, listing_id):
+    listing, comments, in_watchlist = listing_page_utility(request, listing_id)
 
-    # Render listing page if request method is GET
     return render(request, "auctions/listing.html", {
         "listing": listing,
         "comments": comments,
         "comment_form": NewCommentForm(),
         "in_watchlist": in_watchlist
     })
+
+
+def add_comment(request, listing_id):
+    listing, comments, in_watchlist = listing_page_utility(request, listing_id)
+    
+    form = NewCommentForm(request.POST)
+
+    if form.is_valid():
+        content = form.cleaned_data["content"]
+        comment = Comment(listing=listing, commenter=request.user, content=content)
+        comment.save()
+        return HttpResponseRedirect(reverse("listing", args=(listing.id,)))
+
+    else:
+        return render(request, "auctions/listing.html", {
+            "listing": listing,
+            "comments": comments,
+            "comment_form": form,
+            "in_watchlist": in_watchlist
+        })
+    
+
+def toggle_watchlist(request, listing_id):
+    listing, comments, in_watchlist = listing_page_utility(request, listing_id)
+
+    if in_watchlist:
+        request.user.watchlist.remove(listing)
+    else:
+        request.user.watchlist.add(listing)
+
+    return HttpResponseRedirect(reverse("listing", args=(listing.id,)))
 
 
 def categories(request):
