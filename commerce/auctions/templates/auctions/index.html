@@ -1,7 +1,13 @@
 {% extends "auctions/layout.html" %}
 
 {% block body %}
-    <h2>Active Listings</h2>
+    <h2>
+        {% if home_page %}
+            Active Listings
+        {% else %}
+            {{ category }}
+        {% endif %}
+    </h2>
 
     <div class="card-columns">
         {% for listing in listings %}
@@ -11,8 +17,12 @@
                 {% endif %}
 
                 <div class="card-body">
-                    <h5 class="card-title">{{ listing.title }}</h5>
+                    <h4>${{ listing.price }}</h4>
+                    <a href="{% url 'listing' listing.id %}" class="stretched-link"><h5 class="card-title">{{ listing.title }}</h5></a>
                     <p class="card-text">{{ listing.description }}</p>
+                    {% if listing.category %}
+                        <span class="badge badge-primary">{{ listing.category }}</span>
+                    {% endif %}
                 </div>
             </div>
         {% endfor %}

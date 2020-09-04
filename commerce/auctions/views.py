@@ -13,7 +13,7 @@ from .models import User, Listing, Bid, Comment
 class NewListingForm(ModelForm):
     class Meta:
         model = Listing
-        fields = ['title', 'description', 'starting_bid', 'image', 'category']
+        fields = ['title', 'description', 'price', 'image', 'category']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -31,7 +31,8 @@ class NewListingForm(ModelForm):
 
 def index(request):
     return render(request, "auctions/index.html", {
-        "listings": Listing.objects.all()
+        "listings": Listing.objects.all(),
+        "home_page": True
     })
 
 
@@ -95,11 +96,11 @@ def create(request):
         if form.is_valid():
             title = form.cleaned_data["title"]
             description = form.cleaned_data["description"]
-            starting_bid = form.cleaned_data["starting_bid"]
+            price = form.cleaned_data["price"]
             image = form.cleaned_data["image"]
             category = form.cleaned_data["category"]
 
-            listing = Listing(title=title, description=description, starting_bid=starting_bid, image=image, category=category)
+            listing = Listing(title=title, description=description, price=price, image=image, category=category)
             listing.save()
             return HttpResponseRedirect(reverse("index"))
         
@@ -110,4 +111,27 @@ def create(request):
 
     return render(request, "auctions/create.html", {
         "listing_form": NewListingForm()
+    })
+
+
+def listing(request, listing_id):
+    listing = Listing.objects.get(id=listing_id)
+    return render(request, "auctions/listing.html", {
+        "listing": listing
+    })
+
+
+def categories(request):
+    categories = Listing.objects.order_by('category').values_list('category', flat=True).distinct()
+    categories = [category.capitalize() for category in categories if category is not None]
+    return render(request, "auctions/categories.html", {
+        "categories": categories
+    })
+
+
+def category_listings(request, category):
+    return render(request, "auctions/index.html", {
+        "category": category,
+        "listings": Listing.objects.filter(category=category.upper()),
+        "home_page": False
     })
