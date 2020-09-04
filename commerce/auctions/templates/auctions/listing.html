@@ -1,7 +1,40 @@
 {% extends "auctions/layout.html" %}
 
 {% block body %}
-    <h2>Listing: {{ listing.title }}</h2>
-    <img src="{{ listing.image }}" alt="{{ listing.title }}">
+    <div>
+        <h2>Listing: {{ listing.title }}</h2>
+        <h3>${{ listing.price }}</h3> 
+        <p>{{ listing.description }}</p>
+        {% if listing.image %}
+            <img src="{{ listing.image }}" alt="{{ listing.title }}">
+        {% endif %}
+    </div>
+
+    <h3>Details</h3>
+    <ul>
+        <li>Category: {{ listing.category }}</li>
+    </ul>
+    
+
+    <h3>Comments</h3>
+    {% for comment in comments %}
+        <div class="comment">
+            <h5>{{ comment.commenter }}</h5>
+            <p class="text-muted"><small>{{ comment.timestamp }}</small></p>
+            <p>{{ comment.content }}</p>
+        </div>
+    {% empty %}
+        <p>No comments yet.</p>
+    {% endfor %}
+
+    {% if user.is_authenticated %}
+        <h3>Add a Comment</h3>
+        <form action="{% url 'listing' listing.id %}" method="post">
+            {% load crispy_forms_tags %}
+            {% crispy comment_form comment_form.helper %}
+        </form>
+    {% else %}
+        <p>Log in to post a comment.</p>
+    {% endif %}
 
 {% endblock %}

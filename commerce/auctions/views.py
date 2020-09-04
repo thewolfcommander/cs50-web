@@ -18,14 +18,23 @@ class NewListingForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
-        self.helper.form_id = 'id-newListingForm'
-        self.helper.form_class = 'blueForms'
         self.helper.form_method = 'post'
         self.helper.form_action = 'create'
-        self.helper.form_class = 'form-horizontal'
         self.helper.label_class = 'col-lg-2'
         self.helper.field_class = 'col-lg-8'
+        self.helper.add_input(Submit('submit', 'Submit'))
 
+
+class NewCommentForm(ModelForm):
+    class Meta:
+        model = Comment
+        fields = ['content']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.label_class = 'col-lg-2'
+        self.helper.field_class = 'col-lg-8'
         self.helper.add_input(Submit('submit', 'Submit'))
 
 
@@ -100,7 +109,7 @@ def create(request):
             image = form.cleaned_data["image"]
             category = form.cleaned_data["category"]
 
-            listing = Listing(title=title, description=description, price=price, image=image, category=category)
+            listing = Listing(creator=request.user, title=title, description=description, price=price, image=image, category=category)
             listing.save()
             return HttpResponseRedirect(reverse("index"))
         
@@ -116,8 +125,30 @@ def create(request):
 
 def listing(request, listing_id):
     listing = Listing.objects.get(id=listing_id)
+    comments = Comment.objects.filter(listing=listing)
+
+    # Validate and save comment if request method is POST
+    if request.method =="POST":
+        form = NewCommentForm(request.POST)
+
+        if form.is_valid():
+            content = form.cleaned_data["content"]
+            comment = Comment(listing=listing, commenter=request.user, content=content)
+            comment.save()
+            return HttpResponseRedirect(reverse("listing", args=(listing.id,)))
+
+        else:
+            return render(request, "auctions/listing.html", {
+                "listing": listing,
+                "comments": comments,
+                "comment_form": form
+            })
+
+    # Render listing page if request method is GET
     return render(request, "auctions/listing.html", {
-        "listing": listing
+        "listing": listing,
+        "comments": comments,
+        "comment_form": NewCommentForm()
     })
 
 

@@ -25,6 +25,7 @@ class Listing(models.Model):
         ('TRAVEL', 'Travel')
     ]
 
+    creator = models.ForeignKey(User, on_delete=models.CASCADE, related_name="listings", null=True)
     title = models.CharField(max_length=200, verbose_name="Title")
     description = models.TextField(verbose_name="Description")
     price = models.DecimalField(decimal_places=2, verbose_name="Starting Bid", max_digits=15)
@@ -32,10 +33,16 @@ class Listing(models.Model):
     category = models.CharField(choices=LISTING_CATEGORIES, blank=True, verbose_name="Category", max_length=200, null=True)
 
     def __str__(self):
-        return f"{self.id}: {self.title}"
+        return self.title
 
 class Bid(models.Model):
     pass
 
 class Comment(models.Model):
-    pass
+    listing = models.ForeignKey(Listing, on_delete=models.CASCADE, related_name="comments", null=True)
+    commenter = models.ForeignKey(User, on_delete=models.CASCADE, related_name="comments", null=True)
+    content = models.TextField(verbose_name="Comment", default="")
+    timestamp = models.DateTimeField(auto_now_add=True, null=True)
+
+    def __str__(self):
+        return f"{self.commenter} commented on {self.listing} ({self.timestamp.date()})"
