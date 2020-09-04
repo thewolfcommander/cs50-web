@@ -13,8 +13,14 @@
     <h3>Details</h3>
     <ul>
         <li>Category: {{ listing.category }}</li>
+        <li>Listed by: {{ listing.creator.username }}</li>
     </ul>
-    
+
+    {% if in_watchlist %}
+        <p>in watchlist</p>
+    {% else %}
+        <p>not in watchlist</p>
+    {% endif %}    
 
     <h3>Comments</h3>
     {% for comment in comments %}

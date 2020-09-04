@@ -2,10 +2,12 @@
 
 {% block body %}
     <h2>
-        {% if home_page %}
+        {% if page == "home" %}
             Active Listings
-        {% else %}
+        {% elif page == "category" %}
             {{ category }}
+        {% elif page == "watchlist" %}
+            Watchlist
         {% endif %}
     </h2>
 
@@ -25,6 +27,8 @@
                     {% endif %}
                 </div>
             </div>
+        {% empty %}
+            <p>No items in your watchlist.</p>
         {% endfor %}
     </div>
 

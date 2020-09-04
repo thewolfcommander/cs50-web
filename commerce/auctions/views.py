@@ -41,7 +41,7 @@ class NewCommentForm(ModelForm):
 def index(request):
     return render(request, "auctions/index.html", {
         "listings": Listing.objects.all(),
-        "home_page": True
+        "page": "home"
     })
 
 
@@ -126,6 +126,7 @@ def create(request):
 def listing(request, listing_id):
     listing = Listing.objects.get(id=listing_id)
     comments = Comment.objects.filter(listing=listing)
+    in_watchlist = listing in request.user.watchlist.all()
 
     # Validate and save comment if request method is POST
     if request.method =="POST":
@@ -141,14 +142,16 @@ def listing(request, listing_id):
             return render(request, "auctions/listing.html", {
                 "listing": listing,
                 "comments": comments,
-                "comment_form": form
+                "comment_form": form,
+                "in_watchlist": in_watchlist
             })
 
     # Render listing page if request method is GET
     return render(request, "auctions/listing.html", {
         "listing": listing,
         "comments": comments,
-        "comment_form": NewCommentForm()
+        "comment_form": NewCommentForm(),
+        "in_watchlist": in_watchlist
     })
 
 
@@ -164,5 +167,12 @@ def category_listings(request, category):
     return render(request, "auctions/index.html", {
         "category": category,
         "listings": Listing.objects.filter(category=category.upper()),
-        "home_page": False
+        "page": "categories"
+    })
+
+@login_required
+def watchlist(request):
+    return render(request, "auctions/index.html", {
+        "listings": request.user.watchlist.all(),
+        "page": "watchlist"
     })

@@ -8,7 +8,14 @@ class ListingAdmin(admin.ModelAdmin):
 class CommentAdmin(admin.ModelAdmin):
     list_display = ("id", "commenter", "timestamp", "content")
 
+class CustomUserAdmin(UserAdmin):
+    filter_horizontal = ("watchlist",)
+    fieldsets = UserAdmin.fieldsets + (
+        ("Watchlist", {'fields': ('watchlist',)}),
+    )
+
 # Register your models here.
 admin.site.register(Listing, ListingAdmin)
 admin.site.register(Comment, CommentAdmin)
-admin.site.register(User, UserAdmin)
+admin.site.register(User, CustomUserAdmin)
+
