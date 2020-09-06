@@ -2,6 +2,10 @@ body {
     padding: 20px;
 }
 
+form {
+    padding: 0;
+}
+
 .card img {
     width: auto;
     height: 15vw;

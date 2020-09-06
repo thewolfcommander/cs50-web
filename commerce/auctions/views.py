@@ -1,6 +1,8 @@
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from django.core.exceptions import ValidationError
 from django.db import IntegrityError
+from django.db.models import Max, Count
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
@@ -32,15 +34,42 @@ class NewCommentForm(ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.fields["content"].widget.attrs["placeholder"] = "Enter comment"
         self.helper = FormHelper()
-        self.helper.label_class = 'col-lg-2'
-        self.helper.field_class = 'col-lg-8'
+        self.helper.form_tag = False
+        self.helper.form_show_labels = False
         self.helper.add_input(Submit('submit', 'Submit'))
+
+
+class NewBidForm(ModelForm):
+    class Meta:
+        model = Bid
+        fields = ['bid_price']
+
+    def __init__(self, *args, **kwargs):
+        self.listing = kwargs.pop('listing', None)
+        super(NewBidForm, self).__init__(*args, **kwargs)
+        self.fields["bid_price"].widget.attrs["placeholder"] = "Enter bid"
+        self.helper = FormHelper()
+        self.helper.form_tag = False
+        self.helper.form_show_labels = False
+        self.helper.add_input(Submit('submit', 'Place Bid'))
+
+    def clean(self):
+        bid_price = self.cleaned_data["bid_price"]
+        bids = Bid.objects.filter(listing=self.listing)
+        if bids:
+            highest_bid_price = bids.order_by("bid_price").last().bid_price
+            if bid_price <= highest_bid_price:
+                raise ValidationError("Bid must be greater than any bids already placed")
+        else:
+            if bid_price < self.listing.price:
+                raise ValidationError("Bid must be as large as the starting bid")
 
 
 def index(request):
     return render(request, "auctions/index.html", {
-        "listings": Listing.objects.all(),
+        "listings": Listing.objects.annotate(highest_bid_price=Max('bids__bid_price')),
         "page": "home"
     })
 
@@ -124,7 +153,7 @@ def create(request):
 
 
 def listing_page_utility(request, listing_id):
-    listing = Listing.objects.get(id=listing_id)
+    listing = Listing.objects.annotate(highest_bid_price=Max('bids__bid_price'), num_bids=Count('bids__id')).get(id=listing_id)
     comments = Comment.objects.filter(listing=listing)
     
     if request.user.is_authenticated:
@@ -142,10 +171,11 @@ def listing(request, listing_id):
         "listing": listing,
         "comments": comments,
         "comment_form": NewCommentForm(),
+        "bid_form": NewBidForm(),
         "in_watchlist": in_watchlist
     })
 
-
+@login_required
 def add_comment(request, listing_id):
     listing, comments, in_watchlist = listing_page_utility(request, listing_id)
     
@@ -162,10 +192,32 @@ def add_comment(request, listing_id):
             "listing": listing,
             "comments": comments,
             "comment_form": form,
+            "bid_form": NewBidForm(),
+            "in_watchlist": in_watchlist
+        })
+
+@login_required
+def add_bid(request, listing_id):
+    listing, comments, in_watchlist= listing_page_utility(request, listing_id)
+    
+    form = NewBidForm(request.POST, listing=listing)
+
+    if form.is_valid():
+        bid_price = form.cleaned_data["bid_price"]
+        bid = Bid(listing=listing, bidder=request.user, bid_price=bid_price)
+        bid.save()
+        return HttpResponseRedirect(reverse("listing", args=(listing.id,)))
+
+    else:
+        return render(request, "auctions/listing.html", {
+            "listing": listing,
+            "comments": comments,
+            "comment_form": NewCommentForm(),
+            "bid_form": form,
             "in_watchlist": in_watchlist
         })
     
-
+@login_required
 def toggle_watchlist(request, listing_id):
     listing, comments, in_watchlist = listing_page_utility(request, listing_id)
 

@@ -8,6 +8,9 @@ class ListingAdmin(admin.ModelAdmin):
 class CommentAdmin(admin.ModelAdmin):
     list_display = ("id", "commenter", "timestamp", "content")
 
+class BidAdmin(admin.ModelAdmin):
+    list_display = ("id", "listing", "bidder", "timestamp", "bid_price")
+
 class CustomUserAdmin(UserAdmin):
     filter_horizontal = ("watchlist",)
     fieldsets = UserAdmin.fieldsets + (
@@ -17,5 +20,6 @@ class CustomUserAdmin(UserAdmin):
 # Register your models here.
 admin.site.register(Listing, ListingAdmin)
 admin.site.register(Comment, CommentAdmin)
+admin.site.register(Bid, BidAdmin)
 admin.site.register(User, CustomUserAdmin)
 

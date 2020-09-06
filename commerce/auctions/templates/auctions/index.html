@@ -19,7 +19,9 @@
                 {% endif %}
 
                 <div class="card-body">
-                    <h4>${{ listing.price }}</h4>
+                    <h4>
+                        ${% firstof listing.highest_bid_price|floatformat:"2" listing.price %}
+                    </h4>
                     <a href="{% url 'listing' listing.id %}" class="stretched-link"><h5 class="card-title">{{ listing.title }}</h5></a>
                     <p class="card-text">{{ listing.description }}</p>
                     {% if listing.category %}
