@@ -2,7 +2,12 @@
 
 {% block body %}
     <div>
-        <h2>{{ listing.title }}</h2>
+        <h2>
+            {% if not listing.active %}
+            CLOSED - 
+            {% endif %}
+            {{ listing.title }}
+        </h2>
 
         <div class="listing-section">
             {% if in_watchlist %}
@@ -22,30 +27,46 @@
     </div>
 
     <div class="mt-3">
-        {% if user.is_authenticated %}
-            <p class="text-muted">
-                {% if listing.num_bids == 0 %}
-                    No bids so far.
-                {% elif listing.num_bids == 1 %}
-                    1 bid so far.
-                {% else %}
-                    {{ listing.num_bids }} bids so far.
-                {% endif %}
-            </p>
-            <form action="{% url 'add_bid' listing.id %}" method="post">
-                {% load crispy_forms_tags %}
-                {% crispy bid_form bid_form.helper %}
-            </form>
+        {% if listing.active %}
+            {% if user.is_authenticated %}
+                <p class="text-muted">
+                    {% if listing.num_bids == 0 %}
+                        No bids so far.
+                    {% elif listing.num_bids == 1 %}
+                        1 bid so far.
+                    {% else %}
+                        {{ listing.num_bids }} bids so far.
+                    {% endif %}
+                </p>
+                <form action="{% url 'add_bid' listing.id %}" method="post">
+                    {% load crispy_forms_tags %}
+                    {% crispy bid_form bid_form.helper %}
+                </form>
+            {% else %}
+                <p>Log in to place a bid.</p>
+            {% endif %}
         {% else %}
-            <p>Log in to place a bid.</p>
+            <h3 class="text-danger">This auction has been closed.</h3>
+            {% if listing.winner == user %}
+                <h3 class="text-success">You are the winner! 🎉</h3>
+            {% endif %}
         {% endif %}
     </div>
+
+    {% if listing.active and user.is_authenticated and listing.creator == user %}
+        <div class="mt-4">
+                <h3 class="text-danger">Close the Auction</h3>
+                <p>This will make the highest bidder the winner of the action, and make the listing inactive.</p>
+                <a href="{% url 'close_auction' listing.id %}"><button type="button" class="mt-2 btn btn-danger">Close Auction</button></a>
+        </div>
+    {% endif %}
 
     <div class="mt-4">
         <h3 class="text-primary">Details</h3>
         <ul>
-            <li>Category: {{ listing.category|capfirst }}</li>
-            <li>Listed by: {{ listing.creator.username }}</li>
+            <li><strong>Category: </strong>{{ listing.category|capfirst }}</li>
+            <li><strong>Listed by: </strong>{{ listing.creator.username }}</li>
+            <li><strong>Listed on: </strong>{{ listing.timestamp|date:"F j Y, h:i a" }}</li>
         </ul>
     </div>
 

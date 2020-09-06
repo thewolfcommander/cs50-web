@@ -24,9 +24,6 @@
                     </h4>
                     <a href="{% url 'listing' listing.id %}" class="stretched-link"><h5 class="card-title">{{ listing.title }}</h5></a>
                     <p class="card-text">{{ listing.description }}</p>
-                    {% if listing.category %}
-                        <span class="badge badge-light">{{ listing.category }}</span>
-                    {% endif %}
                 </div>
             </div>
         {% empty %}

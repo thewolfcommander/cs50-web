@@ -38,7 +38,7 @@ class NewCommentForm(ModelForm):
         self.helper = FormHelper()
         self.helper.form_tag = False
         self.helper.form_show_labels = False
-        self.helper.add_input(Submit('submit', 'Submit'))
+        self.helper.add_input(Submit('submit', 'Add Comment'))
 
 
 class NewBidForm(ModelForm):
@@ -69,7 +69,7 @@ class NewBidForm(ModelForm):
 
 def index(request):
     return render(request, "auctions/index.html", {
-        "listings": Listing.objects.annotate(highest_bid_price=Max('bids__bid_price')),
+        "listings": Listing.objects.filter(active=True).annotate(highest_bid_price=Max('bids__bid_price')),
         "page": "home"
     })
 
@@ -219,7 +219,7 @@ def add_bid(request, listing_id):
     
 @login_required
 def toggle_watchlist(request, listing_id):
-    listing, comments, in_watchlist = listing_page_utility(request, listing_id)
+    listing, _, in_watchlist = listing_page_utility(request, listing_id)
 
     if in_watchlist:
         request.user.watchlist.remove(listing)
@@ -228,9 +228,22 @@ def toggle_watchlist(request, listing_id):
 
     return HttpResponseRedirect(reverse("listing", args=(listing.id,)))
 
+@login_required
+def close_auction(request, listing_id):
+    listing, _, _= listing_page_utility(request, listing_id)
+    winning_bid = Bid.objects.filter(listing=listing).order_by("bid_price").last()
+
+    if winning_bid:
+        listing.winner = winning_bid.bidder
+
+    listing.active = False
+    listing.save()
+
+    return HttpResponseRedirect(reverse("listing", args=(listing.id,)))
+
 
 def categories(request):
-    categories = Listing.objects.order_by('category').values_list('category', flat=True).distinct()
+    categories = Listing.objects.filter(active=True).order_by("category").values_list("category", flat=True).distinct()
     categories = [category.capitalize() for category in categories if category is not None]
     return render(request, "auctions/categories.html", {
         "categories": categories
@@ -240,7 +253,7 @@ def categories(request):
 def category_listings(request, category):
     return render(request, "auctions/index.html", {
         "category": category,
-        "listings": Listing.objects.filter(category=category.upper()),
+        "listings": Listing.objects.filter(category=category.upper()).filter(active=True),
         "page": "categories"
     })
 
