@@ -1,3 +1,27 @@
 textarea {
     min-height: 400px;
 }
+
+.mail-item .row {
+    /* border: 2px solid black; */
+    box-shadow: 
+        2px 0 0 0, 
+        0 2px 0 0, 
+        2px 2px 0 0,
+        2px 0 0 0 inset, 
+        0 2px 0 0 inset;
+    padding: 5px 5px;
+}
+
+.mail-item .col, .col-6 {
+    padding: 0;
+}
+
+.mail-item .sender {
+    font-weight: bold;
+}
+
+.mail-item .timestamp {
+    color: #888;
+    text-align: right;
+}
