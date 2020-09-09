@@ -149,8 +149,26 @@ function render_email(email) {
   document.getElementById('email-timestamp').innerHTML = email.timestamp;
   document.getElementById('email-body').innerHTML = email.body;
 
+  // Remove existing event listener from reply button and add new listener
+  document.getElementById('reply').removeEventListener('click', reply);
+  document.getElementById('reply').addEventListener('click', () => reply(email));
+
+
   // Append archive button
   add_archive_button(email.id);
+}
+
+
+function reply(email) {
+  
+  // Go to compose email form
+  compose_email();
+
+  // Pre-fill form
+  const subject = `${email.subject.substring(0, 4)==='Re: ' ? '' : 'Re: '}${email.subject}`;
+  document.querySelector('#compose-recipients').value = email.sender;
+  document.querySelector('#compose-subject').value = subject;
+  document.querySelector('#compose-body').value = `On ${email.timestamp} ${email.sender} wrote: \n${email.body}`;
 }
 
 

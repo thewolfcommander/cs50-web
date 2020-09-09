@@ -29,6 +29,10 @@ textarea {
     margin: 2px;
 }
 
-#email-view button {
+#email-view button, #compose-form .btn {
     margin-top: 10px;
+}
+
+#archive-button {
+    display: inline;
 }
