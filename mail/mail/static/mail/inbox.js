@@ -142,35 +142,15 @@ function render_email(email) {
   document.querySelector('#emails-view').style.display = 'none';
   document.querySelector('#email-view').style.display = 'block';
 
-  // Clear any existing content
-  document.querySelector('#email-view').innerHTML = '';
+  // Display email fields
+  document.getElementById('email-from').innerHTML = email.sender;
+  document.getElementById('email-to').innerHTML = email.recipients;
+  document.getElementById('email-subject').innerHTML = email.subject;
+  document.getElementById('email-timestamp').innerHTML = email.timestamp;
+  document.getElementById('email-body').innerHTML = email.body;
 
-  // Create elements to show email data
-  const sender = document.createElement('p');
-  sender.innerHTML = `<strong>From:</strong> ${email.sender}`;
-
-  const recipient = document.createElement('p');
-  recipient.innerHTML = `<strong>To:</strong> ${email.recipients}`;
-
-  const subject = document.createElement('p');
-  subject.innerHTML = `<strong>Subject:</strong> ${email.subject}`;
-
-  const timestamp = document.createElement('p');
-  timestamp.innerHTML = `<strong>Timestamp:</strong> ${email.timestamp}`;
-
-  const hr = document.createElement('hr');
-
-  const body = document.createElement('p');
-  body.innerHTML = email.body;
-
-  // Append elements to DOM
-  document.querySelector('#email-view').append(sender);
-  document.querySelector('#email-view').append(recipient);
-  document.querySelector('#email-view').append(subject);
-  document.querySelector('#email-view').append(timestamp);
+  // Append archive button
   add_archive_button(email.id);
-  document.querySelector('#email-view').append(hr);
-  document.querySelector('#email-view').append(body);
 }
 
 
@@ -202,17 +182,23 @@ function toggle_archive(email_id, mailbox) {
 
 
 function add_archive_button(email_id) {
+  
+  // Clear an existing buttons
+  document.getElementById('archive-button').innerHTML = '';
+
+  // Determine button text
   const mailbox = document.querySelector('h3').innerHTML;
   const button_color = mailbox==='Inbox' ? 'danger' : 'primary'
 
+  // Append archive button
   if (mailbox !== 'Sent') {
     const archive_button = document.createElement('button');
     archive_button.setAttribute('class', `btn btn-sm btn-${button_color}`);
     archive_button.setAttribute('id', 'archive');
     archive_button.innerHTML = mailbox==='Inbox' ? 'Archive' : 'Unarchive';
     archive_button.addEventListener('click', () => toggle_archive(email_id, mailbox));
-
-    document.querySelector('#email-view').append(archive_button);
+    
+    document.getElementById('archive-button').append(archive_button);
   }
 
 }
