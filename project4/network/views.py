@@ -1,14 +1,20 @@
+import json
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 
-from .models import User
+from .models import User, Post
 
 
 def index(request):
-    return render(request, "network/index.html")
+    return render(request, "network/index.html", {
+        "posts": Post.objects.all().order_by("-timestamp"),
+        "feed": True,
+        "all_posts": True
+    })
 
 
 def login_view(request):
@@ -61,3 +67,51 @@ def register(request):
         return HttpResponseRedirect(reverse("index"))
     else:
         return render(request, "network/register.html")
+
+
+def profile(request, username):
+    profiled_user = User.objects.get(username=username)
+    return render(request, "network/profile.html", {
+        "profile": User.objects.get(username=username),
+        "posts": Post.objects.filter(creator=profiled_user).order_by("-timestamp"),
+        "feed": True
+    })
+
+
+@login_required
+def following(request):
+    return render(request, "network/index.html", {
+        "posts": Post.objects.filter(creator__in=request.user.following.all()).order_by("-timestamp"),
+        "feed": True,
+        "all_posts": False
+    })
+
+
+@login_required
+def post(request):
+    if request.method == "POST":
+        content = request.POST["content"]
+        new_post = Post(content=content, creator=request.user)
+        new_post.save()
+    
+    return HttpResponseRedirect(reverse("index"))
+
+
+@login_required
+def toggle_following(request, profile_username):
+    profile_user = User.objects.get(username=profile_username)
+
+    # Unfollow if user is following
+    if request.user in profile_user.followers.all():
+        request.user.following.remove(profile_user)
+
+    # Folllow if user not following
+    else:
+        request.user.following.add(profile_user)
+
+    return HttpResponseRedirect(reverse("profile", args=(profile_username,)))
+
+
+
+    
+

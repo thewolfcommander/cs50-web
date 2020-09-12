@@ -1,5 +1,29 @@
 {% extends "network/layout.html" %}
+{% load static %}
 
 {% block body %}
-    TODO
+    <h1>
+        {% if all_posts %}
+            All Posts
+        {% else %}
+            Posts by Users You're Following
+        {% endif %}
+    </h1>
+
+    {% if all_posts and user.is_authenticated %}
+        <form action="{% url 'post' %}" method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <textarea class="form-control" autofocus name="content" id="new-post-content" placeholder="What's happening?"></textarea>
+            </div>
+            <input class="btn btn-primary" type="submit" value="Post" id="new-post-submit">
+        </form>
+
+        <hr>
+    {% endif %}
+    
+{% endblock %}
+
+{% block script %}
+    <script src="{% static 'network/index.js' %}"></script>
 {% endblock %}
