@@ -5,15 +5,25 @@ from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
+from django.core.paginator import Paginator
 
 from .models import User, Post
 
 
+def paginate_posts(request, posts):
+    paginator = Paginator(posts, 10)
+    page_number = request.GET.get('page')
+
+    return paginator.get_page(page_number)
+
+
 def index(request):
+    posts = Post.objects.all().order_by("-timestamp")
+    page_obj = paginate_posts(request, posts)
+
     return render(request, "network/index.html", {
-        "posts": Post.objects.all().order_by("-timestamp"),
-        "feed": True,
-        "all_posts": True
+        "posts": page_obj,
+        "feed": True
     })
 
 
@@ -71,19 +81,24 @@ def register(request):
 
 def profile(request, username):
     profiled_user = User.objects.get(username=username)
+    posts = Post.objects.filter(creator=profiled_user).order_by("-timestamp")
+    page_obj = paginate_posts(request, posts)
+
     return render(request, "network/profile.html", {
         "profile": User.objects.get(username=username),
-        "posts": Post.objects.filter(creator=profiled_user).order_by("-timestamp"),
+        "posts": page_obj,
         "feed": True
     })
 
 
 @login_required
 def following(request):
-    return render(request, "network/index.html", {
-        "posts": Post.objects.filter(creator__in=request.user.following.all()).order_by("-timestamp"),
-        "feed": True,
-        "all_posts": False
+    posts = Post.objects.filter(creator__in=request.user.following.all()).order_by("-timestamp")
+    page_obj = paginate_posts(request, posts)
+
+    return render(request, "network/following.html", {
+        "posts": page_obj,
+        "feed": True
     })
 
 

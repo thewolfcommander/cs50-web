@@ -2,15 +2,9 @@
 {% load static %}
 
 {% block body %}
-    <h1>
-        {% if all_posts %}
-            All Posts
-        {% else %}
-            Posts by Users You're Following
-        {% endif %}
-    </h1>
+    <h1>All Posts</h1>
 
-    {% if all_posts and user.is_authenticated %}
+    {% if user.is_authenticated %}
         <form action="{% url 'post' %}" method="post">
             {% csrf_token %}
             <div class="form-group">
