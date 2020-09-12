@@ -1,7 +1,7 @@
-{% extends "network/layout.html" %}
+{% extends "network/posts.html" %}
 {% load static %}
 
-{% block body %}
+{% block top-matter %}
     <h1>All Posts</h1>
 
     {% if user.is_authenticated %}
