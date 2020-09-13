@@ -16,13 +16,21 @@
                     <h5 class="card-title">{{ post.creator }}</h5>
                 </a>
                 <h6 class="card-subtitle mb-2 text-muted">{{ post.timestamp }}</h6>
-                <p class="card-text">{{ post.content }}</p>
+                {% if user.is_authenticated  and user == post.creator %}
+                    <button type="button" class="btn btn-link edit-link" id="edit-link-{{ post.id }}" data-post="{{ post.id }}">Edit</button>
+                    <div class="edit-form" id="edit-form-{{ post.id }}">
+                        <textarea class="form-control edit-textarea" id="edit-textarea-{{ post.id }}" data-post="{{ post.id }}">{{ post.content }}</textarea>
+                        <button class="btn btn-primary btn-sm my-1 edit-save-btn" data-post="{{ post.id }}">Save</button>
+                    </div>
+                {% endif %}
+                <p class="card-text" id="post-content-{{ post.id }}">{{ post.content }}</p>
                 <p class="card-text text-muted">
                     <svg width="1em" 
                          height="1em"
                          viewBox="0 0 16 16"
                          xmlns="http://www.w3.org/2000/svg"
                          id="{{ post.id }}"
+                         data-post="{{ post.id }}"
                          class="bi bi-suit-heart-fill"
                          fill="
                             {% if user in post.likes.all %}

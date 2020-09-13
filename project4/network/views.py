@@ -154,6 +154,30 @@ def toggle_like(request, post_id):
         return JsonResponse({"error": "PUT request required."}, status=400)
 
 
+@csrf_exempt
+@login_required
+def edit_post(request, post_id):
+    
+    # Edit post if request is PUT
+    if request.method =="PUT":
+        
+        # Query for requested post
+        try:
+            post = Post.objects.get(id=post_id)
+        except Post.DoesNotExist:
+            return JsonResponse({"error": "Post not found."}, status=404)
+
+        # Update post content
+        data = json.loads(request.body)
+        post.content = data["content"]
+        post.save()
+        return HttpResponse(status=204)
+
+    # Request must be via PUT
+    else:
+        return JsonResponse({"error": "PUT request required."}, status=400)
+
+
 
     
 
