@@ -56,6 +56,16 @@ function toggle_edit(element) {
 
 function add_toggle_edit_btn(button) {
     button.onclick = () => toggle_edit_btn(button);
+
+    // Disable save button if textarea is empty
+    button.disabled = false;
+    document.getElementById(`edit-textarea-${button.dataset.post}`).onkeyup = () => {
+        if (document.getElementById(`edit-textarea-${button.dataset.post}`).value.length > 0) {
+            button.disabled = false;
+        } else {
+            button.disabled = true;
+        }
+    };
 }
 
 function toggle_edit_btn(button) {
@@ -79,4 +89,3 @@ function toggle_edit_btn(button) {
     document.getElementById(`post-content-${button.dataset.post}`).style.display = 'block';
     document.getElementById(`edit-link-${button.dataset.post}`).style.display = 'block';
 }
-
