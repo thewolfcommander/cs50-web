@@ -19,5 +19,8 @@
 {% endblock %}
 
 {% block script %}
-    <script src="{% static 'network/index.js' %}"></script>
+    {% if user.is_authenticated %}
+        {{ block.super }}
+        <script src="{% static 'network/index.js' %}"></script>
+    {% endif %}
 {% endblock %}

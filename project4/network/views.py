@@ -2,10 +2,11 @@ import json
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
 from django.urls import reverse
 from django.core.paginator import Paginator
+from django.views.decorators.csrf import csrf_exempt
 
 from .models import User, Post
 
@@ -125,6 +126,32 @@ def toggle_following(request, profile_username):
         request.user.following.add(profile_user)
 
     return HttpResponseRedirect(reverse("profile", args=(profile_username,)))
+
+
+@csrf_exempt
+@login_required
+def toggle_like(request, post_id):
+    
+    # Toggle liking of post if request is PUT
+    if request.method =="PUT":
+        
+        # Query for requested post
+        try:
+            post = Post.objects.get(id=post_id)
+        except Post.DoesNotExist:
+            return JsonResponse({"error": "Post not found."}, status=404)
+
+        # Toggle whether post is liked or not
+        if request.user in post.likes.all():
+            post.likes.remove(request.user)
+        else:
+            post.likes.add(request.user)
+        post.save()
+        return HttpResponse(status=204)
+
+    # Request must be via PUT
+    else:
+        return JsonResponse({"error": "PUT request required."}, status=400)
 
 
 

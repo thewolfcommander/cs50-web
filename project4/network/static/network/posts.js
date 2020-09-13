@@ -1,25 +1,36 @@
 document.addEventListener('DOMContentLoaded', function () {
-    disable_submit();
     add_toggle_likes();
 });
 
-// Disable submit button for new form until user types something in
-function disable_submit() {
-    document.getElementById('new-post-submit').disabled = true;
-
-    document.getElementById('new-post-content').onkeyup = () => {
-        if (document.getElementById('new-post-content').value.length > 0) {
-            document.getElementById('new-post-submit').disabled = false;
-        } else {
-            document.getElementById('new-post-submit').disabled = true;
-        }
-    };
-}
-
 function add_toggle_likes() {
-    document.querySelectorAll('.bi').forEach(element => add_toggle_like(element))
+    document.querySelectorAll('.bi').forEach(element => add_toggle_like(element));
 }
 
 function add_toggle_like(element) {
-    element.onclick = () => console.log("Hi!")
+    element.onclick = () => toggle_like(element)
+}
+
+function toggle_like(element) {
+    
+    // Check if post is currently liked
+    const liked = element.attributes.fill.value.trim()==='red' ? true : false;
+
+    // Update liked status via PUT request
+    fetch(`toggle_like/${element.id}`, {
+        method: 'PUT',
+        body: JSON.stringify({
+            liked: !liked
+        })
+    });
+
+    // Update like count and icon displayed on page
+    const like_count = parseInt(document.getElementById(`like-count-${element.id}`).innerText);
+    if (liked) {
+        document.getElementById(`like-count-${element.id}`).innerText = like_count - 1;
+        element.setAttribute('fill', 'black');
+    } else {
+        document.getElementById(`like-count-${element.id}`).innerText = like_count + 1;
+        element.setAttribute('fill', 'red');
+    }
+
 }
