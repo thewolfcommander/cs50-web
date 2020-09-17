@@ -254,7 +254,7 @@ def category_listings(request, category):
     return render(request, "auctions/index.html", {
         "category": category,
         "listings": Listing.objects.filter(category=category.upper()).filter(active=True),
-        "page": "categories"
+        "page": "category"
     })
 
 @login_required
