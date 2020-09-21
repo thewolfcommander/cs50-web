@@ -4,8 +4,8 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from rest_framework import status
 
-from . models import User, Task, Offer, Question
-from . serializers import TaskSerializer, OfferSerializer, QuestionSerializer
+from . models import User, Task, Offer, Question, Review
+from . serializers import TaskSerializer, OfferSerializer, QuestionSerializer, ReviewSerializer
 
 def index(request):
     return HttpResponse("Hello World!")

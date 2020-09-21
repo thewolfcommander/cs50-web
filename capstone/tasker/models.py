@@ -59,3 +59,14 @@ class Question(models.Model):
     def __str__(self):
         return f"{self.commenter} commented on {self.task}"
 
+
+class Review(models.Model):
+    task = models.ForeignKey(Task, on_delete=models.CASCADE)
+    reviewer = models.ForeignKey(User, on_delete=models.CASCADE, related_name="posted_reviews")
+    reviewee = models.ForeignKey(User, on_delete=models.CASCADE, related_name="received_reviews")
+    rating = models.SmallIntegerField()
+    content = models.TextField()
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.reviewer} gave {self.reviewee} a {self.rating} star review"

@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from . models import User, Task, Offer, Question
+from . models import User, Task, Offer, Question, Review
 
 class TaskSerializer(serializers.ModelSerializer):
     class Meta:
@@ -15,3 +15,8 @@ class QuestionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Question
         fields = ("id", "task", "commenter", "content", "timestamp")
+
+class ReviewSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Review
+        fields = ("id", "task", "reviewer", "reviewee", "rating", "content", "timestamp")
