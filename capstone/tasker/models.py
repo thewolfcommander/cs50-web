@@ -40,7 +40,7 @@ class Task(models.Model):
 
 
 class Offer(models.Model):
-    task = models.ForeignKey(Task, on_delete=models.CASCADE)
+    task = models.ForeignKey(Task, on_delete=models.CASCADE, related_name="offers")
     price = models.IntegerField()
     tasker = models.ForeignKey(User, on_delete=models.CASCADE)
     message = models.TextField()
@@ -51,7 +51,7 @@ class Offer(models.Model):
 
 
 class Question(models.Model):
-    task = models.ForeignKey(Task, on_delete=models.CASCADE)
+    task = models.ForeignKey(Task, on_delete=models.CASCADE, related_name="questions")
     commenter = models.ForeignKey(User, on_delete=models.CASCADE)
     content = models.TextField()
     timestamp = models.DateTimeField(auto_now_add=True)
@@ -61,7 +61,7 @@ class Question(models.Model):
 
 
 class Review(models.Model):
-    task = models.ForeignKey(Task, on_delete=models.CASCADE)
+    task = models.ForeignKey(Task, on_delete=models.CASCADE, related_name="reviews")
     reviewer = models.ForeignKey(User, on_delete=models.CASCADE, related_name="posted_reviews")
     reviewee = models.ForeignKey(User, on_delete=models.CASCADE, related_name="received_reviews")
     rating = models.SmallIntegerField()

@@ -21,9 +21,7 @@ class TaskBoard extends React.Component {
         .then(response => {
             response.data.forEach(task => tasks.push(
                 <TaskCard key={task.id}
-                          title={task.title}
-                          category={task.category}
-                          description={task.description}
+                          task={task}
                 />
         ))})
         .then(() => this.setState({tasks: tasks}))
