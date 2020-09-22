@@ -13,7 +13,7 @@ class TaskSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Task
-        fields = ("id", "title", "description", "poster", "due_date", "budget", "category", "timestamp", "status", "assignee")
+        fields = ("id", "title", "description", "poster", "due_date", "budget", "category", "timestamp", "status", "assignee", "offers")
 
 
 class OfferSerializer(serializers.ModelSerializer):
