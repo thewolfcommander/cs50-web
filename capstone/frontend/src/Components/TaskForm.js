@@ -1,5 +1,6 @@
 import React from 'react';
 import axios from 'axios';
+import { Redirect } from "react-router-dom";
 import Form from 'react-bootstrap/Form';
 import InputGroup from 'react-bootstrap/InputGroup';
 import Button from 'react-bootstrap/Button';
@@ -22,7 +23,8 @@ class TaskForm extends React.Component {
             dueDate: null,
             poster: 's_naomi',
             validated: false,
-            datePickerClassName: 'not-validated'
+            datePickerClassName: 'not-validated',
+            validForm: false
         }
         this.validateForm = this.validateForm.bind(this);
         this.validateForm = this.validateForm.bind(this);
@@ -36,7 +38,7 @@ class TaskForm extends React.Component {
             this.state.budget >= 0 &&
             this.state.dueDate !== null) {
                 return true;
-            }
+        }
         return false;
     }
 
@@ -58,6 +60,8 @@ class TaskForm extends React.Component {
             const url = `${API_URL}/tasks/`;
             axios.post(url, this.state)
             .then(response => console.log(response))
+
+            this.setState({validForm: true});
 
         } else {
             // Otherwise, show validation hints
@@ -164,6 +168,7 @@ class TaskForm extends React.Component {
                     </p>
                 </Form.Group>
                 <Button variant="primary" type="submit">Post Task</Button>
+                {this.state.validForm && <Redirect to="/tasks" />}
             </Form>
         );
     }

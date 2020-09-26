@@ -1,6 +1,5 @@
 import React from 'react';
 import axios from 'axios';
-import CardColumns from 'react-bootstrap/CardColumns';
 import TaskCard from './TaskCard';
 import { API_URL } from '../Util/Constants';
 
@@ -27,11 +26,11 @@ class TaskBoard extends React.Component {
 
     render() {
         return (
-            <CardColumns>
+            <div>
                 {this.state.tasks.map(task => (
-                    <TaskCard key={task.id} task={task} />
+                    <TaskCard key={task.id} task={task} fetchtask={this.props.fetchtask} />
                 ))}
-            </CardColumns>
+            </div>
         );
     }
 }

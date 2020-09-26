@@ -30,8 +30,6 @@ def tasks_collection(request):
         budget = data.get("budget", "")
         poster = User.objects.get(username=data.get("poster", ""))
         due_date = parser.parse(data.get("dueDate", ""))
-        print(due_date)
-        # due_date = date.today()
 
         task = Task(
             title=title,

@@ -4,7 +4,7 @@ import Nav from 'react-bootstrap/Nav';
 import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
 import HomePage from './HomePage';
 import TaskForm from './TaskForm';
-import BrowseTasks from './BrowseTasks';
+import TasksPage from './TasksPage';
 import Profile from './Profile';
 
 class NavMenu extends React.Component {
@@ -12,7 +12,7 @@ class NavMenu extends React.Component {
 
         return (
             <Router>
-                <Navbar bg="light" expand="lg">
+                <Navbar sticky="top" bg="light" variant="light" expand="lg">
                     <Navbar.Brand as={Link} to="/">
                         <img 
                             src="logo.png"
@@ -26,8 +26,8 @@ class NavMenu extends React.Component {
                     <Navbar.Toggle aria-controls="basic-navbar-nav" />
                     <Navbar.Collapse id="basic-navbar-nav">
                         <Nav className="mr-auto">
-                            <Nav.Link as={Link} to="/post-a-task">Post a Task</Nav.Link>
-                            <Nav.Link as={Link} to="/browse-tasks">Browse Tasks</Nav.Link>
+                            <Nav.Link as={Link} to="/post-task">Post a Task</Nav.Link>
+                            <Nav.Link as={Link} to="/tasks">Browse Tasks</Nav.Link>
                             <Nav.Link as={Link} to="/profile">Profile</Nav.Link>
                         </Nav>
                     </Navbar.Collapse>
@@ -35,8 +35,8 @@ class NavMenu extends React.Component {
 
                 <Switch>
                     <Route exact path="/" component={HomePage} />
-                    <Route path="/post-a-task" component={TaskForm} />
-                    <Route path="/browse-tasks" component={BrowseTasks} />
+                    <Route path="/post-task" component={TaskForm} />
+                    <Route path="/tasks" component={TasksPage} />
                     <Route path="/profile" component={Profile} />
                 </Switch>
             </Router>

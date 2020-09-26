@@ -1,11 +1,24 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import Card from 'react-bootstrap/Card';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import { CalendarEvent } from 'react-bootstrap-icons';
+import './css/TaskCard.css'
 
 class TaskCard extends React.Component {
+
+    constructor(props) {
+        super(props);
+        this.handleClick = this.handleClick.bind(this);
+    }
+
+    handleClick() {
+        // console.log(this.props.task.title)
+        // console.log(this.props.task.description)
+        this.props.fetchtask(this.props.task);
+    }
     
     render() {
 
@@ -30,30 +43,32 @@ class TaskCard extends React.Component {
         }
 
         return (
-            <Card>
-                <Card.Body>
-                    <Container>
-                        <Row>
-                            <Col xs={8} className="p-0">
-                                <Card.Title>{this.props.task.title}</Card.Title>
-                            </Col>
-                            <Col className="align-text-top text-right p-0">
-                                <h3>${this.props.task.budget}</h3>
-                            </Col>
-                        </Row>
-                    </Container>
-                    <Card.Subtitle className="text-muted">
-                        <CalendarEvent className="mr-2 align-text-bottom"/>
-                        {due_date}
-                     </Card.Subtitle>
-                </Card.Body>
-                <Card.Footer>
-                        <strong className={`text-uppercase ${text_color}`}>{status}</strong>
-                        {num_offers > 0 && status === 'Open' &&
-                            <span className="text-muted">{` \u{2022} ${num_offers} ${offer_text}`}</span>
-                        }
-                </Card.Footer>
-            </Card>
+            <Link to={`/tasks/${this.props.task.id}`} className="card-link m-0">
+                <Card className="my-2 taskCard" onClick={this.handleClick}>
+                    <Card.Body>
+                        <Container>
+                            <Row>
+                                <Col xs={8} className="p-0">
+                                    <Card.Title>{this.props.task.title}</Card.Title>
+                                </Col>
+                                <Col className="align-text-top text-right p-0">
+                                    <h3>${this.props.task.budget}</h3>
+                                </Col>
+                            </Row>
+                        </Container>
+                        <Card.Subtitle className="text-muted">
+                            <CalendarEvent className="mr-2 align-text-bottom"/>
+                            {due_date}
+                        </Card.Subtitle>
+                    </Card.Body>
+                    <Card.Footer>
+                            <strong className={`text-uppercase ${text_color}`}>{status}</strong>
+                            {num_offers > 0 && status === 'Open' &&
+                                <span className="text-muted">{` \u{2022} ${num_offers} ${offer_text}`}</span>
+                            }
+                    </Card.Footer>
+                </Card>
+            </Link>
         );
     }
 }

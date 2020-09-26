@@ -1,0 +1,12 @@
+.tasksPage {
+    max-height: calc(100vh - 8rem);
+}
+
+#tasksCol {
+    max-height: calc(100vh - 8rem);
+    overflow-y: auto;
+}
+
+#detailsCol {
+    max-height: calc(100vh - 8rem);
+}
