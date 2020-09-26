@@ -1,9 +1,12 @@
 from django.shortcuts import render
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.db.models import Q
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from rest_framework import status
+from datetime import date
+import json
+from dateutil import parser
 
 from . models import User, Task, Offer, Question, Review
 from . serializers import TaskSerializer, OfferSerializer, QuestionSerializer, ReviewSerializer
@@ -11,7 +14,7 @@ from . serializers import TaskSerializer, OfferSerializer, QuestionSerializer, R
 def index(request):
     return HttpResponse("Hello World!")
 
-
+# API to get all tasks, or post a new task
 @api_view(["GET", "POST"])
 def tasks_collection(request):
     if request.method == "GET":
@@ -20,13 +23,36 @@ def tasks_collection(request):
         return Response(serializer.data)
 
     elif request.method == "POST":
-        serializer = TaskSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        data = json.loads(request.body)
+        title = data.get("title", "")
+        description = data.get("description", "")
+        category = data.get("category", "")
+        budget = data.get("budget", "")
+        poster = User.objects.get(username=data.get("poster", ""))
+        due_date = parser.parse(data.get("dueDate", ""))
+        print(due_date)
+        # due_date = date.today()
+
+        task = Task(
+            title=title,
+            description=description,
+            poster=poster,
+            due_date=due_date,
+            budget=budget,
+            category=category
+        )
+        task.save()
+        return JsonResponse({"message": "Task created successfully"}, status=201)
 
 
+        # serializer = TaskSerializer(data=request.data)
+        # if serializer.is_valid():
+        #     serializer.save()
+        #     return Response(status=status.HTTP_201_CREATED)
+        # return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+# API to get, update, or delete a specific task
 @api_view(["GET", "PUT", "DELETE"])
 def task_element(request, task_id):
     try:
@@ -50,6 +76,7 @@ def task_element(request, task_id):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
+# API to get all questions for a specific task
 @api_view(["GET"])
 def task_questions_collection(request, task_id):
     try:
@@ -63,6 +90,7 @@ def task_questions_collection(request, task_id):
         return Response(serializer.data)
 
 
+# API to post a new question
 @api_view(["POST"])
 def questions_collection(request):
     if request.method == "POST":
@@ -73,6 +101,7 @@ def questions_collection(request):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+# API to get all offers for a specific task
 @api_view(["GET"])
 def task_offers_collection(request, task_id):
     try:
@@ -86,6 +115,7 @@ def task_offers_collection(request, task_id):
         return Response(serializer.data)
 
 
+# API to post a new offer
 @api_view(["POST"])
 def offers_collection(request):
     if request.method == "POST":
@@ -96,6 +126,7 @@ def offers_collection(request):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+# API to get, update or delete a specific offer
 @api_view(["GET", "PUT", "DELETE"])
 def offer_element(request, offer_id):
     try:
@@ -119,6 +150,7 @@ def offer_element(request, offer_id):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
+# API to post a new review
 @api_view(["POST"])
 def reviews_collection(request):
     if request.method == "POST":
@@ -129,6 +161,7 @@ def reviews_collection(request):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+# API to get all reviews of a specific user
 @api_view(["GET"])
 def user_reviews_collection(request, username):
     try:

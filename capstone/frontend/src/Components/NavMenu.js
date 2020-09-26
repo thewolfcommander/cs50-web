@@ -3,7 +3,7 @@ import Navbar from 'react-bootstrap/NavBar';
 import Nav from 'react-bootstrap/Nav';
 import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
 import HomePage from './HomePage';
-import PostTask from './PostTask';
+import TaskForm from './TaskForm';
 import BrowseTasks from './BrowseTasks';
 import Profile from './Profile';
 
@@ -35,7 +35,7 @@ class NavMenu extends React.Component {
 
                 <Switch>
                     <Route exact path="/" component={HomePage} />
-                    <Route path="/post-a-task" component={PostTask} />
+                    <Route path="/post-a-task" component={TaskForm} />
                     <Route path="/browse-tasks" component={BrowseTasks} />
                     <Route path="/profile" component={Profile} />
                 </Switch>
