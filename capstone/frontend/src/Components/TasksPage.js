@@ -11,20 +11,13 @@ class TasksPage extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            title: 'placeholder',
-            description: 'placeholder',
-            category: 'Other',
-            budget: 0,
-            dueDate: null,
-            poster: 's_naomi',
+            task: null
         }
         this.fetchTask = this.fetchTask.bind(this);
     }
 
     fetchTask(task) {
-        this.setState({title: task.title,
-                       description: task.description,
-                       category: task.category})
+        this.setState({task: task})
     }
 
     render() {
@@ -39,9 +32,13 @@ class TasksPage extends React.Component {
                         </Col>
 
                         <Col sm={8} id="detailsCol">
-                            <h4>{this.state.title}</h4>
-                            <p>{this.state.description}</p>
-                            <p>{this.state.category}</p>
+                            {this.state.task &&
+                                <div>
+                                    <h4>{this.state.task.title}</h4>
+                                    <p>{this.state.task.description}</p>
+                                    <p>{this.state.task.category}</p>
+                                </div>
+                            }
                         </Col>
                     </Row>
                 </Container>
