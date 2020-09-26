@@ -15,16 +15,10 @@ class TaskBoard extends React.Component {
     }
 
     getTasks() {
-        let tasks = [];
         const url = `${API_URL}/tasks`;
         axios.get(url)
-        .then(response => {
-            response.data.forEach(task => tasks.push(
-                <TaskCard key={task.id}
-                          task={task}
-                />
-        ))})
-        .then(() => this.setState({tasks: tasks}))
+        .then(response => response.data)
+        .then(tasks => this.setState({tasks: tasks}))
     }
 
     componentDidMount() {
@@ -34,7 +28,9 @@ class TaskBoard extends React.Component {
     render() {
         return (
             <CardColumns>
-                {this.state.tasks}
+                {this.state.tasks.map(task => (
+                    <TaskCard key={task.id} task={task} />
+                ))}
             </CardColumns>
         );
     }
