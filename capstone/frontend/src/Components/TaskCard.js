@@ -6,6 +6,7 @@ import Col from 'react-bootstrap/Col';
 import { CalendarEvent } from 'react-bootstrap-icons';
 
 class TaskCard extends React.Component {
+    
     render() {
 
         const options = { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' };

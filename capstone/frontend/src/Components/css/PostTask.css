@@ -1,0 +1,12 @@
+.postFormDatePicker {
+    border: 1px solid #ced4da;
+    border-radius: .25rem;
+    padding: .375rem .75rem;
+    color: #495057;
+}
+
+.postFormDatePicker:focus {
+    border-color: #80bdff;
+    outline: 0;
+    box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+}
