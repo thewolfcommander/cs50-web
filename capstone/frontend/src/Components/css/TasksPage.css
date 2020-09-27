@@ -11,3 +11,7 @@
     max-height: calc(100vh - 8rem);
     overflow-y: auto;
 }
+
+.icon {
+    vertical-align: middle;
+}

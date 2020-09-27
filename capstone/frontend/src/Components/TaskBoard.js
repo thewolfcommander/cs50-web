@@ -28,7 +28,11 @@ class TaskBoard extends React.Component {
         return (
             <div>
                 {this.state.tasks.map(task => (
-                    <TaskCard key={task.id} task={task} fetchtask={this.props.fetchtask} />
+                    <TaskCard key={task.id}
+                              task={task}
+                              fetchtask={this.props.fetchtask}
+                              currentTaskId={this.props.currentTaskId}
+                    />
                 ))}
             </div>
         );

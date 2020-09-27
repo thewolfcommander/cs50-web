@@ -7,6 +7,7 @@ import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import TaskBoard from './TaskBoard';
 import QuestionsBoard from './QuestionsBoard';
+import TaskDetails from './TaskDetails';
 import './css/TasksPage.css';
 import { API_URL } from '../Util/Constants';
 
@@ -64,14 +65,12 @@ class TasksPage extends React.Component {
         .then(() => this.getQuestions(this.state.task.id));
 
         this.setState({question: ''});
-
     }
 
     render() {
 
         let task = this.state.task;
         let questions = this.state.questions;
-        const options = { weekday: 'long', year: 'numeric', month: 'short', day: 'numeric' };
 
         return (
             <div className="m-3 tasksPage">
@@ -79,21 +78,24 @@ class TasksPage extends React.Component {
                 <Container fluid>
                     <Row>
                         <Col sm={4} id="tasksCol" className="pl-0">
-                            <TaskBoard fetchtask={this.fetchTask} />
+                            <TaskBoard fetchtask={this.fetchTask} currentTaskId={task ? task.id : null}/>
                         </Col>
 
                         <Col sm={8} id="detailsCol">
                             {this.state.task &&
                                 <div>
                                     <h4>{task.title}</h4>
-                                    <p>{`${task.poster.first_name} ${task.poster.last_name}`}</p>
-                                    <p>{`@${task.poster.username}`}</p>
-                                    <p>{new Date(task.due_date).toLocaleDateString('en-AU', options)}</p>
-                                    <p>{new Date(task.timestamp).toLocaleDateString('en-AU', options)}</p>
+                                    <TaskDetails task={task}/>
+                                    <Button 
+                                        variant="success"
+                                        size="lg"
+                                        className="mt-2 w-100"
+                                    >
+                                        Make an Offer
+                                    </Button>
 
-                                    <p>${task.budget}</p>
-                                    <p>{task.description}</p>
-                                    <p>{task.category}</p>
+                                    <hr />
+                                    <h4>Offers</h4>
 
                                     <hr />
                                     <h4>{`Questions (${questions.length})`}</h4>
@@ -116,10 +118,10 @@ class TasksPage extends React.Component {
                                         </Button>
                                     </Form>
 
-                                    <QuestionsBoard questions={questions} posterId={task.poster.id}/>
+                                    <QuestionsBoard questions={questions}
+                                                    posterId={task.poster.id}
+                                    />
 
-                                    <hr />
-                                    <h4>Offers</h4>
                                 </div>
                             }
                         </Col>

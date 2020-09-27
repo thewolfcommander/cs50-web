@@ -20,11 +20,18 @@ class TaskCard extends React.Component {
     
     render() {
 
+        const task = this.props.task;
         const options = { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' };
-        const due_date = new Date(this.props.task.due_date).toLocaleDateString('en-AU', options)
-        const num_offers = this.props.task.offers.length;
+        const due_date = new Date(task.due_date).toLocaleDateString('en-AU', options)
+        const num_offers = task.offers.length;
         const offer_text = num_offers === 1 ? 'offer' : 'offers';
-        const status = this.props.task.status;
+        const status = task.status;
+
+        let cardClassName = "my-2 taskCard";
+        if (task.id === this.props.currentTaskId) {
+            cardClassName += " border border-success";
+        }
+
         let text_color;
         switch(status) {
             case 'Open':
@@ -41,16 +48,16 @@ class TaskCard extends React.Component {
         }
 
         return (
-            <Link to={`/tasks/${this.props.task.id}`} className="card-link m-0">
-                <Card className="my-2 taskCard" onClick={this.handleClick}>
+            <Link to={`/tasks/${task.id}`} className="card-link m-0">
+                <Card className={cardClassName} onClick={this.handleClick}>
                     <Card.Body>
                         <Container>
                             <Row>
                                 <Col xs={8} className="p-0">
-                                    <Card.Title>{this.props.task.title}</Card.Title>
+                                    <Card.Title>{task.title}</Card.Title>
                                 </Col>
                                 <Col className="align-text-top text-right p-0">
-                                    <h3>${this.props.task.budget}</h3>
+                                    <h3>${task.budget}</h3>
                                 </Col>
                             </Row>
                         </Container>
