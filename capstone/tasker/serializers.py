@@ -26,7 +26,7 @@ class OfferSerializer(serializers.ModelSerializer):
 
 
 class QuestionSerializer(serializers.ModelSerializer):
-    task = TaskSerializer()
+    # task = TaskSerializer()
     commenter = UserSerializer()
 
     class Meta:

@@ -15,8 +15,6 @@ class TaskCard extends React.Component {
     }
 
     handleClick() {
-        // console.log(this.props.task.title)
-        // console.log(this.props.task.description)
         this.props.fetchtask(this.props.task);
     }
     

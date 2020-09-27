@@ -3,6 +3,7 @@ from . import views
 
 urlpatterns = [
     path("", views.index, name="index"),
+    path("api/tasks/top", views.top_task_element),
     path("api/tasks/", views.tasks_collection),
     path("api/tasks/<int:task_id>", views.task_element),
     path("api/questions/", views.questions_collection),

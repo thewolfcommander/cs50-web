@@ -2,3 +2,7 @@
     color: inherit;
     text-decoration: inherit;
 }
+
+.taskCard:hover {
+    box-shadow: 0 .5rem .5rem rgba(0,0,0,.075)
+}

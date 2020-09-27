@@ -14,11 +14,20 @@ from . serializers import TaskSerializer, OfferSerializer, QuestionSerializer, R
 def index(request):
     return HttpResponse("Hello World!")
 
-# API to get all tasks, or post a new task
+# API to get most recently posted open task
+@api_view(["GET"])
+def top_task_element(request):
+    if request.method == "GET":
+        task = Task.objects.filter(status="Open").order_by("-timestamp").first()
+        serializer = TaskSerializer(task)
+        return Response(serializer.data)
+
+
+# API to get all tasks (most recent posts first), or post a new task
 @api_view(["GET", "POST"])
 def tasks_collection(request):
     if request.method == "GET":
-        tasks = Task.objects.all()
+        tasks = Task.objects.all().order_by("-timestamp")
         serializer = TaskSerializer(tasks, many=True)
         return Response(serializer.data)
 
@@ -41,13 +50,6 @@ def tasks_collection(request):
         )
         task.save()
         return JsonResponse({"message": "Task created successfully"}, status=201)
-
-
-        # serializer = TaskSerializer(data=request.data)
-        # if serializer.is_valid():
-        #     serializer.save()
-        #     return Response(status=status.HTTP_201_CREATED)
-        # return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 # API to get, update, or delete a specific task
@@ -74,7 +76,7 @@ def task_element(request, task_id):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-# API to get all questions for a specific task
+# API to get all questions for a specific task (most recent questions first)
 @api_view(["GET"])
 def task_questions_collection(request, task_id):
     try:
@@ -83,7 +85,7 @@ def task_questions_collection(request, task_id):
         return Response(status=status.HTTP_404_NOT_FOUND)
 
     if request.method == "GET":
-        questions = Question.objects.filter(task=task).all()
+        questions = Question.objects.filter(task=task).all().order_by("-timestamp")
         serializer = QuestionSerializer(questions, many=True)
         return Response(serializer.data)
 
@@ -99,7 +101,7 @@ def questions_collection(request):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-# API to get all offers for a specific task
+# API to get all offers for a specific task (most recent offers first)
 @api_view(["GET"])
 def task_offers_collection(request, task_id):
     try:
@@ -108,7 +110,7 @@ def task_offers_collection(request, task_id):
         return Response(status=status.HTTP_404_NOT_FOUND)
 
     if request.method == "GET":
-        offers = Offer.objects.filter(task=task).all()
+        offers = Offer.objects.filter(task=task).all().order_by("-timestamp")
         serializer = OfferSerializer(offers, many=True)
         return Response(serializer.data)
 
