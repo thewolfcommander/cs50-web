@@ -7,6 +7,7 @@ import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import TaskBoard from './TaskBoard';
 import QuestionsBoard from './QuestionsBoard';
+import OffersBoard from './OffersBoard';
 import TaskDetails from './TaskDetails';
 import './css/TasksPage.css';
 import { API_URL } from '../Util/Constants';
@@ -20,9 +21,11 @@ class TasksPage extends React.Component {
             task: null,
             questions: [],
             offers: [],
+            offers: [],
             question: ''
         }
         this.getQuestions = this.getQuestions.bind(this);
+        this.getOffers = this.getOffers.bind(this);
         this.fetchTask = this.fetchTask.bind(this);
         this.getMostRecentTask = this.getMostRecentTask.bind(this);
         this.postQuestion = this.postQuestion.bind(this);
@@ -35,9 +38,17 @@ class TasksPage extends React.Component {
         .then(questions => this.setState({questions: questions}))
     }
 
+    getOffers(taskID) {
+        const url = `${API_URL}/tasks/${taskID}/offers`;
+        axios.get(url)
+        .then(response => response.data)
+        .then(offers => this.setState({offers: offers}))
+    }
+
     fetchTask(task) {
         this.setState({task: task});
         this.getQuestions(task.id);
+        this.getOffers(task.id);
     }
 
     getMostRecentTask() {
@@ -69,8 +80,9 @@ class TasksPage extends React.Component {
 
     render() {
 
-        let task = this.state.task;
-        let questions = this.state.questions;
+        const task = this.state.task;
+        const questions = this.state.questions;
+        const offers = this.state.offers; 
 
         return (
             <div className="m-3 tasksPage">
@@ -95,7 +107,8 @@ class TasksPage extends React.Component {
                                     </Button>
 
                                     <hr />
-                                    <h4>Offers</h4>
+                                    <h4>{`Offers (${offers.length})`}</h4>
+                                    <OffersBoard offers={offers} />
 
                                     <hr />
                                     <h4>{`Questions (${questions.length})`}</h4>

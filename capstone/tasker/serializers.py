@@ -17,7 +17,7 @@ class TaskSerializer(serializers.ModelSerializer):
 
 
 class OfferSerializer(serializers.ModelSerializer):
-    task = TaskSerializer()
+    # task = TaskSerializer()
     tasker = UserSerializer()
 
     class Meta:
