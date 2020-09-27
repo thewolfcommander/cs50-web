@@ -27,7 +27,7 @@ class TaskCard extends React.Component {
         const offer_text = num_offers === 1 ? 'offer' : 'offers';
         const status = task.status;
 
-        let cardClassName = "my-2 taskCard";
+        let cardClassName = "my-3 taskCard";
         if (task.id === this.props.currentTaskId) {
             cardClassName += " border border-success";
         }
