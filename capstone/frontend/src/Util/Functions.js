@@ -5,11 +5,11 @@ function timeDiff(startDate, endDate) {
     const diffMins = Math.round(((diffMs % 86400000) % 3600000) / 60000);
 
     if (diffDays > 0) {
-        return `${diffDays} days`;
+        return `${diffDays} ${diffDays===1 ? 'day': 'days'}`;
     } else if (diffHrs > 0) {
-        return `${diffHrs} hours`;
+        return `${diffHrs} ${diffHrs===1 ? 'hour': 'hours'}`;
     } else {
-        return `${diffMins} mins`;
+        return `${diffMins} ${diffMins===1 ? 'min': 'mins'}`;
     }
 }
 

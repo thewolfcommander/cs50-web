@@ -94,11 +94,18 @@ def task_questions_collection(request, task_id):
 @api_view(["POST"])
 def questions_collection(request):
     if request.method == "POST":
-        serializer = QuestionSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        data = json.loads(request.body)
+        task = Task.objects.get(id=data.get("taskId", ""))
+        commenter = User.objects.get(username=data.get("commenter", ""))
+        content = data.get("content", "")
+
+        question = Question(
+            task=task,
+            commenter=commenter,
+            content=content
+        )
+        question.save()
+        return JsonResponse({"message": "Question created successfully"}, status=201)
 
 
 # API to get all offers for a specific task (most recent offers first)

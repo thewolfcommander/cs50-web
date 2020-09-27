@@ -3,6 +3,8 @@ import axios from 'axios';
 import Container from 'react-bootstrap/Container'
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
+import Form from 'react-bootstrap/Form';
+import Button from 'react-bootstrap/Button';
 import TaskBoard from './TaskBoard';
 import QuestionsBoard from './QuestionsBoard';
 import './css/TasksPage.css';
@@ -16,11 +18,13 @@ class TasksPage extends React.Component {
         this.state = {
             task: null,
             questions: [],
-            offers: []
+            offers: [],
+            question: ''
         }
         this.getQuestions = this.getQuestions.bind(this);
         this.fetchTask = this.fetchTask.bind(this);
         this.getMostRecentTask = this.getMostRecentTask.bind(this);
+        this.postQuestion = this.postQuestion.bind(this);
     }
 
     getQuestions(taskID) {
@@ -46,12 +50,28 @@ class TasksPage extends React.Component {
         this.getMostRecentTask();
     }
 
+    // Post the question by submitting form
+    postQuestion(event) {
+        event.preventDefault();
+
+        const url = `${API_URL}/questions/`;
+        axios.post(url, {
+            taskId: this.state.task.id,
+            commenter: 's_naomi',
+            content: this.state.question
+        })
+        .then(response => console.log(response))
+        .then(() => this.getQuestions(this.state.task.id));
+
+        this.setState({question: ''});
+
+    }
+
     render() {
 
         let task = this.state.task;
         let questions = this.state.questions;
         const options = { weekday: 'long', year: 'numeric', month: 'short', day: 'numeric' };
-        console.log(this.state.questions)
 
         return (
             <div className="m-3 tasksPage">
@@ -77,6 +97,25 @@ class TasksPage extends React.Component {
 
                                     <hr />
                                     <h4>{`Questions (${questions.length})`}</h4>
+                                    <Form onSubmit={this.postQuestion}>
+                                        <Form.Group className="mb-1" controlId="questionsForm">
+                                            <Form.Control as="textarea"
+                                                          rows="3"
+                                                          value={this.state.question}
+                                                          placeholder={`Ask ${task.poster.first_name} a question`}
+                                                          maxLength={1500}
+                                                          onChange={e => this.setState({question: e.target.value})}
+                                            />
+                                        </Form.Group>
+                                        <Button variant="primary" 
+                                                type="submit" 
+                                                size="sm" 
+                                                disabled={this.state.question===''}
+                                        >
+                                            Send
+                                        </Button>
+                                    </Form>
+
                                     <QuestionsBoard questions={questions} posterId={task.poster.id}/>
 
                                     <hr />

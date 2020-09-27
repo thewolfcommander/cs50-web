@@ -13,8 +13,8 @@ class QuestionRow extends React.Component {
             <div>
                 <h6 className="text-primary mb-0 mt-3">
                     {`${question.commenter.first_name} 
-                      ${question.commenter.last_name}
-                      @${question.commenter.username} `}
+                      ${question.commenter.last_name}`}
+                      <span className="text-muted">{` @${question.commenter.username}`} </span>
                     {this.props.posterId===question.commenter.id &&
                     <Badge pill variant="secondary">Poster</Badge>}
                 </h6>

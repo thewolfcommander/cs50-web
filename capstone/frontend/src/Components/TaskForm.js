@@ -45,9 +45,9 @@ class TaskForm extends React.Component {
     // Set class of DatePicker for custom CSS
     validateDatePicker() {
         if (this.state.dueDate === null) {
-            this.setState({datePickerClassName: 'non-valid'})
+            this.setState({datePickerClassName: 'non-valid'});
         } else {
-            this.setState({datePickerClassName: 'valid'})
+            this.setState({datePickerClassName: 'valid'});
         }
     }
 
@@ -59,13 +59,13 @@ class TaskForm extends React.Component {
             // Submmit form if all inputs are valid
             const url = `${API_URL}/tasks/`;
             axios.post(url, this.state)
-            .then(response => console.log(response))
+            .then(response => console.log(response));
 
             this.setState({validForm: true});
 
         } else {
             // Otherwise, show validation hints
-            this.setState({validated: true})
+            this.setState({validated: true});
             this.validateDatePicker();
         }
     }
