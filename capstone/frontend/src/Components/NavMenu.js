@@ -37,7 +37,7 @@ class NavMenu extends React.Component {
                     <Route exact path="/" component={HomePage} />
                     <Route path="/post-task" component={TaskForm} />
                     <Route path="/tasks" component={TasksPage} />
-                    <Route path="/profile" component={Profile} />
+                    <Route path="/profile/:username" component={Profile} />
                 </Switch>
             </Router>
         );

@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import Container from 'react-bootstrap/Container'
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -26,10 +27,12 @@ class TaskDetails extends React.Component {
                         </Col>
                         <Col>
                             <small>POSTED BY</small>
-                            <h6 className="text-primary m-0">
-                                {`${task.poster.first_name} ${task.poster.last_name} `}
-                                <span className="text-muted">{`@${task.poster.username}`}</span>
-                            </h6>
+                            <Link to={`/profile/${task.poster.username}`}>
+                                <h6 className="text-primary m-0">
+                                    {`${task.poster.first_name} ${task.poster.last_name} `}
+                                    <span className="text-muted">{`@${task.poster.username}`}</span>
+                                </h6>
+                            </Link>
                             <p className="text-muted">{taskAge} ago</p>
                         </Col>
                     </Row>

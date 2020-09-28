@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import timeDiff from '../Util/Functions';
 import Badge from 'react-bootstrap/Badge';
 
@@ -12,9 +13,11 @@ class QuestionRow extends React.Component {
         return (
             <div>
                 <h6 className="text-primary mb-0 mt-3">
-                    {`${question.commenter.first_name} 
-                      ${question.commenter.last_name}`}
-                      <span className="text-muted">{` @${question.commenter.username}`} </span>
+                    <Link to={`/profile/${question.commenter.username}`}>
+                        {`${question.commenter.first_name} 
+                        ${question.commenter.last_name}`}
+                        <span className="text-muted">{` @${question.commenter.username}`} </span>
+                    </Link>
                     {this.props.posterId===question.commenter.id &&
                     <Badge pill variant="secondary">Poster</Badge>}
                 </h6>
