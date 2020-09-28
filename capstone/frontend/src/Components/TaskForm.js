@@ -27,7 +27,6 @@ class TaskForm extends React.Component {
             validForm: false
         }
         this.validateForm = this.validateForm.bind(this);
-        this.validateForm = this.validateForm.bind(this);
         this.postTask = this.postTask.bind(this);
     }
 

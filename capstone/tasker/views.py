@@ -126,11 +126,20 @@ def task_offers_collection(request, task_id):
 @api_view(["POST"])
 def offers_collection(request):
     if request.method == "POST":
-        serializer = OfferSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        data = json.loads(request.body)
+        task = Task.objects.get(id=data.get("taskId", ""))
+        price = data.get("price", "")
+        tasker = User.objects.get(username=data.get("tasker", ""))
+        message = data.get("message", "")
+
+        offer = Offer(
+            task=task,
+            price=price,
+            tasker=tasker,
+            message=message
+        )
+        offer.save()
+        return JsonResponse({"message": "Offer created successfully"}, status=201)
 
 
 # API to get, update or delete a specific offer

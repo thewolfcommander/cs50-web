@@ -4,6 +4,7 @@ import Container from 'react-bootstrap/Container'
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
+import InputGroup from 'react-bootstrap/InputGroup';
 import Button from 'react-bootstrap/Button';
 import TaskBoard from './TaskBoard';
 import QuestionsBoard from './QuestionsBoard';
@@ -21,14 +22,17 @@ class TasksPage extends React.Component {
             task: null,
             questions: [],
             offers: [],
-            offers: [],
-            question: ''
+            question: '',
+            message: '',
+            price: '',
+            offerFormVisible: false
         }
         this.getQuestions = this.getQuestions.bind(this);
         this.getOffers = this.getOffers.bind(this);
         this.fetchTask = this.fetchTask.bind(this);
         this.getMostRecentTask = this.getMostRecentTask.bind(this);
         this.postQuestion = this.postQuestion.bind(this);
+        this.postOffer = this.postOffer.bind(this);
     }
 
     getQuestions(taskID) {
@@ -78,6 +82,23 @@ class TasksPage extends React.Component {
         this.setState({question: ''});
     }
 
+    // Post the offer by submitting form
+    postOffer(event) {
+        event.preventDefault();
+
+        const url = `${API_URL}/offers/`;
+        axios.post(url, {
+            taskId: this.state.task.id,
+            price: this.state.price,
+            tasker: 's_naomi',
+            message: this.state.message
+        })
+        .then(response => console.log(response))
+        .then(() => this.getOffers(this.state.task.id));
+
+        this.setState({message: '', price: '', offerFormVisible: false});
+    }
+
     render() {
 
         const task = this.state.task;
@@ -98,13 +119,61 @@ class TasksPage extends React.Component {
                                 <div>
                                     <h4>{task.title}</h4>
                                     <TaskDetails task={task}/>
-                                    <Button 
-                                        variant="success"
-                                        size="lg"
-                                        className="mt-2 w-100"
-                                    >
-                                        Make an Offer
-                                    </Button>
+                                    {!this.state.offerFormVisible &&
+                                        <Button 
+                                            variant="success"
+                                            size="lg"
+                                            className="mt-2 w-100"
+                                            onClick={() => this.setState({offerFormVisible: !this.state.offerFormVisible})}
+                                        >
+                                            Make an Offer
+                                        </Button>
+                                    }
+
+                                    {this.state.offerFormVisible &&
+                                        <Form className="mt-3" onSubmit={this.postOffer}>
+                                            <Form.Group controlId="offerFormMessage">
+                                                <Form.Control as="textarea"
+                                                            required
+                                                            rows="3"
+                                                            value={this.state.message}
+                                                            placeholder="Message"
+                                                            onChange={e => this.setState({message: e.target.value})}
+                                                />
+                                            </Form.Group>
+                                            <Form.Group>
+                                                <InputGroup>
+                                                    <InputGroup.Prepend>
+                                                        <InputGroup.Text>$</InputGroup.Text>
+                                                    </InputGroup.Prepend>
+                                                    <Form.Control id="offerFormPrice"
+                                                                required
+                                                                type="number"
+                                                                min={0}
+                                                                value={this.state.price}
+                                                                placeholder="Offer Price"
+                                                                onChange={e => this.setState({price: e.target.value})}>
+                                                    </Form.Control>
+                                                </InputGroup>
+                                            </Form.Group>
+                                            <Button variant="primary" 
+                                                    type="submit"
+                                                    size="sm" 
+                                                    disabled={this.state.message==='' || 
+                                                            this.state.price==='' || 
+                                                            this.state.price < 0}
+                                            >
+                                                    Submit Offer
+                                            </Button>
+                                            <Button variant="secondary" 
+                                                    size="sm" 
+                                                    className="ml-2"
+                                                    onClick={() => this.setState({offerFormVisible: false})}
+                                            >
+                                                    Cancel
+                                            </Button>
+                                        </Form>
+                                    }
 
                                     <hr />
                                     <h4>{`Offers (${offers.length})`}</h4>
