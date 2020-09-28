@@ -20,6 +20,7 @@ class TasksPage extends React.Component {
         super(props);
         this.state = {
             task: null,
+            tasks: [],
             questions: [],
             offers: [],
             question: '',
@@ -33,6 +34,7 @@ class TasksPage extends React.Component {
         this.getMostRecentTask = this.getMostRecentTask.bind(this);
         this.postQuestion = this.postQuestion.bind(this);
         this.postOffer = this.postOffer.bind(this);
+        this.getAllTasks = this.getAllTasks.bind(this);
     }
 
     getQuestions(taskID) {
@@ -50,7 +52,7 @@ class TasksPage extends React.Component {
     }
 
     fetchTask(task) {
-        this.setState({task: task});
+        this.setState({task: task, offerFormVisible: false});
         this.getQuestions(task.id);
         this.getOffers(task.id);
     }
@@ -62,8 +64,16 @@ class TasksPage extends React.Component {
         .then(task => this.fetchTask(task))
     }
 
+    getAllTasks() {
+        const url = `${API_URL}/tasks`;
+        axios.get(url)
+        .then(response => response.data)
+        .then(tasks => this.setState({tasks: tasks}));
+    }
+
     componentDidMount() {
         this.getMostRecentTask();
+        this.getAllTasks();
     }
 
     // Post the question by submitting form
@@ -94,7 +104,9 @@ class TasksPage extends React.Component {
             message: this.state.message
         })
         .then(response => console.log(response))
-        .then(() => this.getOffers(this.state.task.id));
+        .then(() => this.getOffers(this.state.task.id))
+        // Calling this to update offer number on card - must be more efficient way to do this?
+        .then(() => this.getAllTasks());
 
         this.setState({message: '', price: '', offerFormVisible: false});
     }
@@ -111,7 +123,7 @@ class TasksPage extends React.Component {
                 <Container fluid>
                     <Row>
                         <Col sm={4} id="tasksCol" className="pl-0">
-                            <TaskBoard fetchtask={this.fetchTask} currentTaskId={task ? task.id : null}/>
+                            <TaskBoard tasks={this.state.tasks} fetchtask={this.fetchTask} currentTaskId={task ? task.id : null}/>
                         </Col>
 
                         <Col sm={8} id="detailsCol">
@@ -168,7 +180,7 @@ class TasksPage extends React.Component {
                                             <Button variant="secondary" 
                                                     size="sm" 
                                                     className="ml-2"
-                                                    onClick={() => this.setState({offerFormVisible: false})}
+                                                    onClick={() => this.setState({offerFormVisible: false, message: '', price: ''})}
                                             >
                                                     Cancel
                                             </Button>
