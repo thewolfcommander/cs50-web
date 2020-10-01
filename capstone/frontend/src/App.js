@@ -1,11 +1,11 @@
 import React from 'react';
 import './App.css';
-import NavMenu from './Components/NavMenu';
+import AppRouter from './Components/AppRouter';
 
 function App() {
   return (
     <div className="App">
-      <NavMenu />
+      <AppRouter />
     </div>
   );
 }
